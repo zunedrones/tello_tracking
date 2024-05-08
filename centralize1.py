@@ -36,15 +36,17 @@ def centralize(tello, values_detect, only_tracking = False):
     #PID - Speed Control
     width_detect = x2 - x1
     area = (x2 - x1) * (y2 - y1)
+    print(f"Area: {area}")
+    print(f"DETECTIONS: {detections}")
     #se o centro da detecção encontrar-se na esquerda, o erro na horizontal será negativo
     #se o objeto estiver na direita, o erro será positivo
     if (detections > 0):
         errorX = cxDetect - CenterX
         errorY = CenterY - cyDetect
-        if area < 5000: # calibrar
+        if area < 27000: # calibrar
             speedFB = 33
             print(f"AREA: {area}")
-        if area > 6800:
+        if area > 45000:
             width_land = area
     else:
         errorX = 0
@@ -66,6 +68,7 @@ def centralize(tello, values_detect, only_tracking = False):
     speedYaw = int(np.clip(speedYaw,-100,100))
     speedUD = int(np.clip(speedUD,-100,100))
     
+    print(f"FB: {speedFB}, UD: {speedUD}, YAW: {speedYaw}")
     if(detections != 0):
         tello.send_rc_control(0, speedFB, speedUD, speedYaw)
     else:

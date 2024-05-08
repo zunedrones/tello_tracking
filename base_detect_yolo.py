@@ -8,28 +8,40 @@ THICKNESS = 2
 
 model = YOLO("tello_2.pt")
 classNames = ["movel", "takeoff"]
+count = 0
+x1, y1, x2, y2 = 0, 0, 0, 0
+cls = 0
+number_detect = 0
 
 def baseDetect(frame):
     '''
     Faz a deteccao da base e takeoff, utilzando modelo pre-treinado do yolov8n.
     Recebe como argumento o frame atual do video.
     '''
-    results = model(frame, conf=0.88)
+    global count, x1, y1, x2, y2, cls, number_detect
+    
+    if count == 10:
+        count = 0
+        results = model(frame, conf=0.7)
+        for r in results:
+            boxes = r.boxes
+            if len(boxes) >= 1:
+                for box in boxes:
+                    x1, y1, x2, y2 = box.xyxy[0]
+                    x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2) 
+                    cls = int(box.cls[0])
+                    number_detect = len(boxes)
+            else:
+                x1, y1, x2, y2 = 0, 0, 0, 0
+                number_detect = 0
 
-    for r in results:
-        boxes = r.boxes
-        for box in boxes:
-            x1, y1, x2, y2 = box.xyxy[0]
-            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2) 
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 255), 3)
-            cv2.circle(frame, ((x2 - x1) // 2, (y2 - y1) // 2), 5, (0, 255, 0), cv2.FILLED)
+    org = [x1, y1]
+    cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 255), 3)
+    cv2.putText(frame, classNames[cls], org, FONT, FONTSCALE, COLOR, THICKNESS)
+    cv2.circle(frame, ((x2 + x1) // 2, (y2 + y1) // 2), 5, (0, 255, 0), cv2.FILLED)
+    count += 1
 
-            cls = int(box.cls[0])
-            org = [x1, y1]
-
-            cv2.putText(frame, classNames[cls], org, FONT, FONTSCALE, COLOR, THICKNESS)
-
-    if len(boxes) != 0:
-        return [frame, x1, y1, x2, y2, len(boxes)]
+    if number_detect >= 1:
+        return [frame, x1, y1, x2, y2, number_detect]
     else:
-        return [frame, 0, 0, 0, 0, len(boxes)]
+        return [frame, 0, 0, 0, 0, number_detect]
