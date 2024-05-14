@@ -16,7 +16,7 @@ Kp = 0.6
 Kd = 0.6
 
 width_detect = 0
-width_land = 0
+area_land = 0
 
 def centralize(tello, values_detect, only_tracking = False):
     '''
@@ -26,7 +26,7 @@ def centralize(tello, values_detect, only_tracking = False):
     apenas efetua o tracking do objeto sem pousar, e False detecta e pousa.
     A função retorna False se a função de pousar for chamada, e True se ainda não.
     '''
-    global prevErrorX, prevErrorY, CenterX, CenterY, Kp, Kd, width_detect, width_land
+    global prevErrorX, prevErrorY, CenterX, CenterY, Kp, Kd, width_detect, area_land
     _, x1, y1, x2, y2, detections = values_detect
     speedFB = 0
     # detectWidth = x2 - x1
@@ -46,15 +46,19 @@ def centralize(tello, values_detect, only_tracking = False):
         if area < 27000: # calibrar
             speedFB = 33
             print(f"AREA: {area}")
+        elif area > 40000 and not only_tracking:
+            speedFB = -33
+            print(f"AREA: {area}")
+            
         if area > 45000:
-            width_land = area
+            area_land = area
     else:
         errorX = 0
         errorY = 0
         print("0 DETECTIONS")
-        print(f"AREA: {width_land}")
+        print(f"AREA: {area_land}")
 
-        if tello.get_height() <= 23 and area > 6800 and not only_tracking:
+        if tello.get_height() <= 23 and area > 45000 and not only_tracking:
             print("TENTEI POUSAR")
             tello.send_rc_control(0, 0, 0, 0)
             tello.move_forward(35)
