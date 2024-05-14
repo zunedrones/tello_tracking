@@ -1,4 +1,5 @@
-from ultralytics import YOLO
+#from ultralytics import YOLO
+import torch
 import cv2
 
 FONT = cv2.FONT_HERSHEY_SIMPLEX
@@ -6,16 +7,18 @@ FONTSCALE = 1
 COLOR = (255, 0, 0)
 THICKNESS = 2
 
-model = YOLO("tello_2.pt")
 classNames = ["movel", "takeoff"]
 count = 0
 x1, y1, x2, y2 = 0, 0, 0, 0
 cls = 0
 number_detect = 0
 
+model = torch.load("tello_2.pt")
+#model.eval()
+
 def baseDetect(frame):
     '''
-    Faz a deteccao da base e takeoff, utilzando modelo pre-treinado do yolov8n.
+    Faz a deteccao da base movel e takeoff, utilizando modelo pre-treinado do yolov8n.
     Recebe como argumento o frame atual do video.
     '''
     global count, x1, y1, x2, y2, cls, number_detect
