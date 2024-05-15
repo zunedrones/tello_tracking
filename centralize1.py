@@ -10,10 +10,10 @@ prevErrorX = 0
 prevErrorY = 0
 #coeficiente proporcional (obtido testando)
 #determina o quanto a velocidade deve mudar em resposta ao erro atual
-Kp = 0.6
+Kp = 0.4
 #coeficiente derivativo (obtido testando)
 #responsável por controlar a taxa de variação do erro
-Kd = 0.6
+Kd = 0.4
 
 width_detect = 0
 area_land = 0
@@ -44,13 +44,13 @@ def centralize(tello, values_detect, only_tracking = False):
         errorX = cxDetect - CenterX
         errorY = CenterY - cyDetect
         if area < 27000: # calibrar
-            speedFB = 33
+            speedFB = 25
             print(f"AREA: {area}")
-        elif area > 40000 and not only_tracking:
-            speedFB = -33
+        elif area > 120000 and only_tracking:
+            speedFB = -25
             print(f"AREA: {area}")
             
-        if area > 45000:
+        if area > 30000:
             area_land = area
     else:
         errorX = 0
@@ -58,7 +58,7 @@ def centralize(tello, values_detect, only_tracking = False):
         print("0 DETECTIONS")
         print(f"AREA: {area_land}")
 
-        if tello.get_height() <= 23 and area > 45000 and not only_tracking:
+        if tello.get_height() <= 23 and area_land > 30000 and not only_tracking:
             print("TENTEI POUSAR")
             tello.send_rc_control(0, 0, 0, 0)
             tello.move_forward(35)
