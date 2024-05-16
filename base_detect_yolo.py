@@ -6,7 +6,7 @@ FONTSCALE = 1
 COLOR = (255, 0, 0)
 THICKNESS = 2
 
-model = YOLO("tello_3.pt")
+model = YOLO("tello_4.pt")
 classNames = ["movel", "takeoff"]
 count = 0
 x1, y1, x2, y2 = 0, 0, 0, 0
@@ -20,10 +20,10 @@ def baseDetect(frame):
     '''
     global count, x1, y1, x2, y2, cls, number_detect
     
-    if count == 10:
+    if count == 7:
         count = 0
     
-        results = model(frame, conf=0.87, max_det=1, stream_buffer=True)
+        results = model(frame, conf=0.75, max_det=1, stream_buffer=True)
         for r in results:
             boxes = r.boxes
             if len(boxes) >= 1:
