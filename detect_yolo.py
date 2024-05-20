@@ -1,5 +1,4 @@
-#from ultralytics import YOLO
-import torch
+from ultralytics import YOLO
 import cv2
 
 FONT = cv2.FONT_HERSHEY_SIMPLEX
@@ -7,25 +6,25 @@ FONTSCALE = 1
 COLOR = (255, 0, 0)
 THICKNESS = 2
 
+model = YOLO("tello_4.pt")
 classNames = ["movel", "takeoff"]
 count = 0
 x1, y1, x2, y2 = 0, 0, 0, 0
 cls = 0
 number_detect = 0
+values_detect = [0, 0, 0, 0, 0, 0]
 
-model = torch.load("tello_2.pt")
-#model.eval()
-
-def baseDetect(frame):
+def start_detection(frame):
     '''
-    Faz a deteccao da base movel e takeoff, utilizando modelo pre-treinado do yolov8n.
+    Faz a deteccao de um modelo pre-treinado do yolov8.
     Recebe como argumento o frame atual do video.
     '''
-    global count, x1, y1, x2, y2, cls, number_detect
+    global count, x1, y1, x2, y2, cls, number_detect, values_detect
     
-    if count == 10:
+    if count == 7:
         count = 0
-        results = model(frame, conf=0.7)
+    
+        results = model(frame, conf=0.75, max_det=1, stream_buffer=True)
         for r in results:
             boxes = r.boxes
             if len(boxes) >= 1:
@@ -43,8 +42,9 @@ def baseDetect(frame):
     cv2.putText(frame, classNames[cls], org, FONT, FONTSCALE, COLOR, THICKNESS)
     cv2.circle(frame, ((x2 + x1) // 2, (y2 + y1) // 2), 5, (0, 255, 0), cv2.FILLED)
     count += 1
+    print(f"X1: {x1}, Y1: {y1}, X2: {x2}, Y2: {y2} Number: {number_detect}")
 
     if number_detect >= 1:
-        return [frame, x1, y1, x2, y2, number_detect]
+        values_detect = [frame, x1, y1, x2, y2, number_detect]
     else:
-        return [frame, 0, 0, 0, 0, number_detect]
+        values_detect = [frame, 0, 0, 0, 0, number_detect]

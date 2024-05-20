@@ -1,14 +1,17 @@
 from tello_zune import TelloZune
 import cv2
-import centralize1
+import detect_yolo as dy
+import tracking
 
-tello = TelloZune(simulate=False)
+tello = TelloZune()
 tello.start_tello()
 
 while True:
-    tello.start_video(yolo_detect_base=True)
-    still_video = centralize1.centralize(tello.tello, tello.values_detect, only_tracking=True)
-    if cv2.waitKey(1) & 0xFF == ord('q') or not still_video:
+    tello.start_video()
+    dy.start_detection(tello.frame_detection)
+    tracking.start_tracking(tello, dy.values_detect)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 tello.end_video()
 tello.end_tello()
