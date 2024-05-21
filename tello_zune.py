@@ -76,15 +76,15 @@ class TelloZune(Tello):
             self.calc_fps(self.tello_frame)
             self.frame_detection = self.webcam_frame
             cv2.putText(self.tello_frame, f"Battery: {self.get_battery()}", (400, 300), FONT, FONTSCALE, COLOR, THICKNESS)
-            cv2.namedWindow("video")
+            cv2.namedWindow("video", self.webcam_frame)
             cv2.imshow("video", self.tello_frame)
 
         if self.video_decision == 'w' or self.video_decision == 'b':
             self.start_webcam_video()
             self.calc_fps(self.webcam_frame)
             self.frame_detection = self.webcam_frame
-            cv2.namedWindow('Webcam')
             cv2.imshow("webcam", self.webcam_frame)
+            print('teste') # não ocorre
 
 
 
@@ -103,5 +103,12 @@ class TelloZune(Tello):
             self.num_frames = 0
             self.start_time = time.time()
         cv2.putText(frame, f"FPS: {self.fps}", ORG, FONT, FONTSCALE, COLOR, THICKNESS)
+    
+    def start_webcam_video(self):
+        '''
+        Inicia a transmissao de video da webcam.
+        '''
+        _, self.webcam_frame = self.webcam.read()
 
+        self.webcam_frame = cv2.resize(self.webcam_frame, (WIDTH, HEIGHT))
 

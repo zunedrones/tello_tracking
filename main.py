@@ -2,7 +2,7 @@ from tello_zune import TelloZune
 import cv2
 import detect_yolo as dy
 import tracking
-
+#cv2.namedWindow('webcam')
 tello = TelloZune()
 tello.start_tello()
 
