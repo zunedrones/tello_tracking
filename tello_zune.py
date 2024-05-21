@@ -2,17 +2,6 @@ from djitellopy import Tello
 import cv2
 import time
 
-'''
-Class TelloZune
------------------------------------------------
-start_tello()               # inicializa o tello
-end_tello()                 # finaliza o tello
-start_video()               # inicia a transmissao de video do tello
-end_video()                 # finaliza a transmissao de video do tello
-start_webcam_video()       # inicia a transmissao de video da webcam
------------------------------------------------
-'''
-
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 COLOR = (0, 255, 0)
 ORG = (30, 30)
@@ -21,7 +10,6 @@ THICKNESS = 2
 WIDTH = 544
 HEIGHT = 306
 
-# Exception para quando a bateria do Tello for menor que 20% nao executar o resto dos comandos.
 class BatteryError(Exception):
     pass
 
@@ -30,20 +18,15 @@ def battery_error(tello_battery: int):
         raise BatteryError("Bateria menor que 20%, operação cancelada.")
 
 class TelloZune(Tello):
-    '''
-    Drone tello da Zune Drones. Herda da classe Tello do pacote djitellopy.
-    '''
     def __init__(self):
         super().__init__()
         self.num_frames = 0
         self.start_time = time.time()
         self.fps = 0
-        
+
     def start_tello(self):
-        '''
-        Inicializa o drone tello. Conecta, testa se é possivel voar, habilita a transmissao por video.
-        '''
         user_input = input("Simular? (s/n): ").lower()
+        self.video_decision = None
         if user_input == "s":
             self.simulate = True
             print("simulando...")
@@ -51,6 +34,7 @@ class TelloZune(Tello):
             if self.video_decision == 'w' or self.video_decision == 'b':
                 self.webcam = cv2.VideoCapture(0)
                 print("abrindo video webcam")
+                cv2.namedWindow('Webcam')
         else:
             self.simulate = False
             print("vamos voar...")
@@ -65,50 +49,53 @@ class TelloZune(Tello):
         if not self.simulate:
             self.takeoff()
             self.send_rc_control(0, 0, 0, 0)
-    
+
     def end_tello(self):
-        '''
-        Finaliza o drone tello.
-        '''
         if not self.simulate:
             self.send_rc_control(0, 0, 0, 0)
             self.land()
         print("finalizei")
-    
-    def start_video(self):
-        '''
-        Inicia a transmissao de video do tello. 
-        Pega cada frame da transmissao com tello_frame, converte a cor de RGB para BGR, muda o tamanho do frame para 544 x 306.
-        Funcao de calcular frames ja inclusa.
-        '''
-        if self.video_decision == 't' or self.video_decision == 'b':
-            self.tello_frame = self.get_frame_read().frame
-            self.tello_frame = cv2.cvtColor(self.tello_frame, cv2.COLOR_RGB2BGR)
-            self.tello_frame = cv2.resize(self.tello_frame, (WIDTH, HEIGHT))
 
-            self.calc_fps(self.tello_frame)
-            self.frame_detection = self.webcam_frame
-            cv2.putText(self.tello_frame, f"Battery: {self.get_battery()}", (400, 300), FONT, FONTSCALE, COLOR, THICKNESS)
-            cv2.imshow("video", self.tello_frame)
+    def start_video(self):
+        if self.video_decision == 't' or self.video_decision == 'b':
+            tello_frame_read = self.get_frame_read()
+            cv2.namedWindow("Tello Video")
 
         if self.video_decision == 'w' or self.video_decision == 'b':
-            self.start_webcam_video()
-            self.calc_fps(self.webcam_frame)
-            self.frame_detection = self.webcam_frame
-            cv2.imshow("webcam", self.webcam_frame)
-            
+            cv2.namedWindow('Webcam') #
+
+        while True:
+            if self.video_decision == 't' or self.video_decision == 'b':
+                self.tello_frame = tello_frame_read.frame
+                self.tello_frame = cv2.cvtColor(self.tello_frame, cv2.COLOR_RGB2BGR)
+                self.tello_frame = cv2.resize(self.tello_frame, (WIDTH, HEIGHT))
+                self.calc_fps(self.tello_frame)
+                cv2.putText(self.tello_frame, f"Battery: {self.get_battery()}", (400, 300), FONT, FONTSCALE, COLOR, THICKNESS)
+                cv2.imshow("Tello Video", self.tello_frame)
+
+            if self.video_decision == 'w' or self.video_decision == 'b':
+                ret, self.webcam_frame = self.webcam.read()
+                if not ret:
+                    print("Erro ao capturar frame da webcam")
+                    break
+                self.webcam_frame = cv2.resize(self.webcam_frame, (WIDTH, HEIGHT))
+                self.calc_fps(self.webcam_frame)
+                cv2.namedWindow('Webcam')
+                cv2.imshow('Webcam', self.webcam_frame)
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        self.end_video()
+
     def end_video(self):
-        '''
-        Finaiza a transmissao de video do Tello. Desabilita a transmissao de video, fecha todas as janelas cv2.
-        '''
         if self.video_decision == 't' or self.video_decision == 'b':
             self.streamoff()
+        if self.video_decision == 'w' or self.video_decision == 'b':
+            self.webcam.release()
         cv2.destroyAllWindows()
-    
+
     def calc_fps(self, frame):
-        '''
-        Calcula a quantidade de frames por segundo na transmissao e coloca essa quantidade na janela criada cv2.
-        '''
         self.num_frames += 1
         self.elapsed_time = time.time() - self.start_time
         if self.elapsed_time >= 1:
@@ -116,10 +103,9 @@ class TelloZune(Tello):
             self.num_frames = 0
             self.start_time = time.time()
         cv2.putText(frame, f"FPS: {self.fps}", ORG, FONT, FONTSCALE, COLOR, THICKNESS)
-    
-    def start_webcam_video(self):
-        '''
-        Inicia a transmissao de video da webcam.
-        '''
-        _, self.webcam_frame = self.webcam.read()
-        self.webcam_frame = cv2.resize(self.webcam_frame, (WIDTH, HEIGHT))
+
+# Exemplo de uso
+tello_zune = TelloZune()
+tello_zune.start_tello()
+tello_zune.start_video()
+tello_zune.end_tello()

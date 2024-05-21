@@ -6,7 +6,7 @@ import datetime
 import cv2
 import os
 import time
-import platform
+
 
 class TelloUI:
     """Wrapper class to enable the GUI."""
@@ -37,8 +37,6 @@ class TelloUI:
         self.btn_pause = tk.Button(self.root, text="Pause", relief="raised", command=self.pause_video)
         self.btn_pause.pack(side="bottom", fill="both", expand="yes", padx=10, pady=5)
 
-        self.btn_landing = tk.Button(self.root, text="Open Command Panel", relief="raised", command=self.open_cmd_window)
-        self.btn_landing.pack(side="bottom", fill="both", expand="yes", padx=10, pady=5)
         
         # Start a thread that constantly polls the video sensor for the most recently read frame
         self.stop_event = threading.Event()
@@ -56,21 +54,21 @@ class TelloUI:
         """
         The main loop thread of Tkinter.
         """
+
         try:
             # Start the thread that gets the GUI image and draws skeleton
             time.sleep(0.5)
             self.sending_command_thread.start()
-            while not self.stop_event.is_set():
-                system = platform.system()
 
+            while not self.stop_event.is_set():
                 # Read the frame for GUI show
                 self.frame = self.tello.read()
+
                 if self.frame is None or self.frame.size == 0:
                     continue 
 
                 # Transfer the format from frame to image
                 image = Image.fromarray(self.frame)
-
                 self._update_gui_image(image)
 
         except RuntimeError as e:
@@ -139,3 +137,6 @@ class TelloUI:
         del self.tello
         self.root.quit()
 
+# Make sure to replace 'path/to/your/model.pt' with the actual path to your YOLO model file.
+# Also ensure that you have the necessary libraries installed:
+# pip install torch torchvision pillow opencv-python tk
