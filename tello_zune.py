@@ -104,8 +104,4 @@ class TelloZune(Tello):
             self.start_time = time.time()
         cv2.putText(frame, f"FPS: {self.fps}", ORG, FONT, FONTSCALE, COLOR, THICKNESS)
 
-# Exemplo de uso
-tello_zune = TelloZune()
-tello_zune.start_tello()
-tello_zune.start_video()
-tello_zune.end_tello()
+

@@ -137,6 +137,3 @@ class TelloUI:
         del self.tello
         self.root.quit()
 
-# Make sure to replace 'path/to/your/model.pt' with the actual path to your YOLO model file.
-# Also ensure that you have the necessary libraries installed:
-# pip install torch torchvision pillow opencv-python tk
