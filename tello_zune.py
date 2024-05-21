@@ -109,6 +109,5 @@ class TelloZune(Tello):
         Inicia a transmissao de video da webcam.
         '''
         _, self.webcam_frame = self.webcam.read()
-
         self.webcam_frame = cv2.resize(self.webcam_frame, (WIDTH, HEIGHT))
 
