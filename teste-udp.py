@@ -3,6 +3,7 @@ from ultralytics import YOLO
 import cv2
 import math
 
+
 capture = cv2.VideoCapture ('udp:/0.0.0.0:11111',cv2.CAP_FFMPEG)
 model = YOLO("tello_2.pt")
 classNames = ["movel", "takeoff"]
@@ -21,6 +22,7 @@ if not capture.isOpened():
 
 while True:
     ret, frame = capture.read()
+    results = model(frame, stream=True, conf=0.7)
     #
     if(ret):
         cv2.imshow('frame', frame)
