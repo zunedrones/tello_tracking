@@ -76,7 +76,7 @@ class TelloZune(Tello):
             self.calc_fps(self.tello_frame)
             self.frame_detection = self.webcam_frame
             cv2.putText(self.tello_frame, f"Battery: {self.get_battery()}", (400, 300), FONT, FONTSCALE, COLOR, THICKNESS)
-            cv2.namedWindow("video", self.webcam_frame)
+            cv2.namedWindow("video")
             cv2.imshow("video", self.tello_frame)
 
         if self.video_decision == 'w' or self.video_decision == 'b':

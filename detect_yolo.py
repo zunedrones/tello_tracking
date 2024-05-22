@@ -8,7 +8,7 @@ THICKNESS = 2
 
 model = YOLO("tello_2.pt")
 classNames = ["movel", "takeoff"]
-cv2.namedWindow('webcam')
+#cv2.namedWindow('webcam')
 count = 0
 x1, y1, x2, y2 = 0, 0, 0, 0
 cls = 0
