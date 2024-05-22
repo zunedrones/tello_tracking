@@ -10,7 +10,6 @@ while True:
     tello.start_video()
     dy.start_detection(tello.frame_detection)
     tracking.start_tracking(tello, dy.values_detect)
-
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 tello.end_video()
