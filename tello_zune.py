@@ -90,10 +90,12 @@ class TelloZune(Tello):
 
         if self.video_decision == 'w' or self.video_decision == 'b':
             self.start_webcam_video()
-            cv2.namedWindow('Webcam')
+            #cv2.namedWindow('Webcam')
+            #cv2.waitKey(20)
             self.calc_fps(self.webcam_frame)
             self.frame_detection = self.webcam_frame
             cv2.imshow('Webcam', self.webcam_frame)
+            #cv2.waitKey(20)
             print('teste') # não ocorre
 
 
