@@ -10,6 +10,10 @@ while True:
     tello.start_video()
     dy.start_detection(tello.frame_detection)
     tracking.start_tracking(tello, dy.values_detect)
+    
+    # Mostrar o frame com as bounding boxes
+    cv2.imshow("Detections", dy.values_detect[0])
+    
     key = cv2.waitKey(1)
     if key == ord('q'):
         break

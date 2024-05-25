@@ -60,7 +60,7 @@ class TelloZune():
             up_down_velocity: -100~100 (up/down)
             yaw_velocity: -100~100 (yaw)
         """
-        def clamp100(x: int) -> int:
+        """ def clamp100(x: int) -> int:
             return max(-100, min(100, x))
 
         if time.time() - self.last_rc_control_timestamp > self.TIME_BTW_RC_CONTROL_COMMANDS:
@@ -71,7 +71,7 @@ class TelloZune():
                 clamp100(up_down_velocity),
                 clamp100(yaw_velocity)
             )
-            self.send_command_without_return(cmd)
+            self.send_command_without_return(cmd) """
 
     def end_tello(self):
         '''
@@ -98,27 +98,21 @@ class TelloZune():
         Pega cada frame da transmissao com tello_frame, converte a cor de RGB para BGR, muda o tamanho do frame para 544 x 306.
         Funcao de calcular frames ja inclusa.
         '''
-
         if self.video_decision == 't' or self.video_decision == 'b':
             self.tello_frame = self.get_frame_read().frame
             self.tello_frame = cv2.cvtColor(self.tello_frame, cv2.COLOR_RGB2BGR)
             self.tello_frame = cv2.resize(self.tello_frame, (WIDTH, HEIGHT))
 
             self.calc_fps(self.tello_frame)
-            self.frame_detection = self.webcam_frame
+            self.frame_detection = self.tello_frame
             cv2.putText(self.tello_frame, f"Battery: {self.get_battery()}", (400, 300), FONT, FONTSCALE, COLOR, THICKNESS)
-            cv2.imshow("video", self.tello_frame)
+            #cv2.imshow("video", self.tello_frame)
 
         if self.video_decision == 'w' or self.video_decision == 'b':
             self.start_webcam_video()
-            #cv2.namedWindow('Webcam')
-            #cv2.waitKey(20)
             self.calc_fps(self.webcam_frame)
-            self.frame_detection = self.webcam_frame
-            cv2.imshow('Webcam', self.frame_detection)
-            #cv2.waitKey(20)
-
-
+            self.frame_detection = self.webcam_frame.copy()
+            #cv2.imshow('Webcam', self.webcam_frame)
 
     def end_video(self):
         if self.video_decision == 't' or self.video_decision == 'b':
