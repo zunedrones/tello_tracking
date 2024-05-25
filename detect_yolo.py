@@ -6,7 +6,7 @@ FONTSCALE = 1
 COLOR = (255, 0, 0)
 THICKNESS = 4
 
-model = YOLO("tello_2.pt")
+model = YOLO("tello_4.pt")
 classNames = ["movel", "takeoff"]
 #cv2.namedWindow('webcam')
 count = 0
@@ -25,7 +25,7 @@ def start_detection(frame):
     if count == 7:
         count = 0
     
-        results = model(frame, conf=0.75, max_det=1)
+        results = model(source=frame, conf=0.75, max_det=1, stream=True)
         for r in results:
             boxes = r.boxes
             if len(boxes) >= 1:

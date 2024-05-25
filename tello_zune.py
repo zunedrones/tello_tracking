@@ -1,4 +1,3 @@
-
 import cv2
 import time
 
@@ -61,6 +60,18 @@ class TelloZune():
             up_down_velocity: -100~100 (up/down)
             yaw_velocity: -100~100 (yaw)
         """
+        def clamp100(x: int) -> int:
+            return max(-100, min(100, x))
+
+        if time.time() - self.last_rc_control_timestamp > self.TIME_BTW_RC_CONTROL_COMMANDS:
+            self.last_rc_control_timestamp = time.time()
+            cmd = 'rc {} {} {} {}'.format(
+                clamp100(left_right_velocity),
+                clamp100(forward_backward_velocity),
+                clamp100(up_down_velocity),
+                clamp100(yaw_velocity)
+            )
+            self.send_command_without_return(cmd)
 
     def end_tello(self):
         '''
@@ -104,7 +115,7 @@ class TelloZune():
             #cv2.waitKey(20)
             self.calc_fps(self.webcam_frame)
             self.frame_detection = self.webcam_frame
-            cv2.imshow('Webcam', self.webcam_frame)
+            cv2.imshow('Webcam', self.frame_detection)
             #cv2.waitKey(20)
 
 
