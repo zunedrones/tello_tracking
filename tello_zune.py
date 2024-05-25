@@ -111,7 +111,7 @@ class TelloZune():
         if self.video_decision == 'w' or self.video_decision == 'b':
             self.start_webcam_video()
             self.calc_fps(self.webcam_frame)
-            self.frame_detection = self.webcam_frame.copy()
+            self.frame_detection = self.webcam_frame
             #cv2.imshow('Webcam', self.webcam_frame)
 
     def end_video(self):
