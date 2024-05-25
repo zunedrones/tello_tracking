@@ -1,4 +1,4 @@
-from djitellopy import Tello
+
 import cv2
 import time
 
@@ -17,7 +17,7 @@ def battery_error(tello_battery: int):
     if tello_battery <= 20:
         raise BatteryError("Bateria menor que 20%, operação cancelada.")
 
-class TelloZune(Tello):
+class TelloZune():
     def __init__(self):
         super().__init__()
         self.num_frames = 0
@@ -51,6 +51,16 @@ class TelloZune(Tello):
         if not self.simulate:
             self.takeoff()
             self.send_rc_control(0, 0, 0, 0)
+
+    def send_rc_control(self, left_right_velocity: int, forward_backward_velocity: int, up_down_velocity: int,
+                        yaw_velocity: int):
+        """Send RC control via four channels. Command is sent every self.TIME_BTW_RC_CONTROL_COMMANDS seconds.
+        Arguments:
+            left_right_velocity: -100~100 (left/right)
+            forward_backward_velocity: -100~100 (forward/backward)
+            up_down_velocity: -100~100 (up/down)
+            yaw_velocity: -100~100 (yaw)
+        """
 
     def end_tello(self):
         '''
@@ -96,7 +106,6 @@ class TelloZune(Tello):
             self.frame_detection = self.webcam_frame
             cv2.imshow('Webcam', self.webcam_frame)
             #cv2.waitKey(20)
-            print('teste') # não ocorre
 
 
 
@@ -116,4 +125,3 @@ class TelloZune(Tello):
             self.start_time = time.time()
         cv2.putText(frame, f"FPS: {self.fps}", ORG, FONT, FONTSCALE, COLOR, THICKNESS)
     
-

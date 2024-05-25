@@ -15,4 +15,3 @@ while True:
         break
 tello.end_video()
 tello.end_tello()
-
