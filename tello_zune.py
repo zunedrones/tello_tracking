@@ -13,7 +13,8 @@ HEIGHT = 306
 class BatteryError(Exception):
     pass
 
-def battery_error(tello_battery: int): # verificar
+def battery_error(tello_battery): # verificar
+    tello_battery = int(tello_battery)
     if tello_battery <= 20:
         raise BatteryError("Bateria menor que 20%, operação cancelada.")
 
@@ -84,7 +85,7 @@ class TelloZune(Tello):
 
             self.calc_fps(self.tello_frame)
             self.frame_detection = self.tello_frame
-            cv2.putText(self.tello_frame, f"Battery: {self.get_battery()}", (400, 300), FONT, FONTSCALE, COLOR, THICKNESS)
+            cv2.putText(self.tello_frame, f"Battery: {self.get_battery()}", (350, 300), FONT, FONTSCALE, COLOR, THICKNESS) # texto deslocado para a esquerda
 
         if self.video_decision in ['w', 'b']:
             self.start_webcam_video()
