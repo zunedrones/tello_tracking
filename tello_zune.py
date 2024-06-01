@@ -13,10 +13,9 @@ HEIGHT = 306
 class BatteryError(Exception):
     pass
 
-def battery_error(tello_battery): # verificar
-    ...
-    #if tello_battery <= 20:
-        #raise BatteryError("Bateria menor que 20%, operação cancelada.")
+def battery_error(tello_battery: int): # verificar
+    if tello_battery <= 20:
+        raise BatteryError("Bateria menor que 20%, operação cancelada.")
 
 class TelloZune(Tello):
     def __init__(self, local_ip='', local_port=8889, imperial=False, command_timeout=0.3, tello_ip='192.168.10.1', tello_port=8889):
@@ -51,6 +50,7 @@ class TelloZune(Tello):
             print("Abrindo vídeo do Tello")
 
         if not self.simulate:
+            #self.takeoff() -> takeoff()
             self.send_command("takeoff")
             self.send_rc_control(0, 0, 0, 0)
 
@@ -60,6 +60,7 @@ class TelloZune(Tello):
         '''
         if not self.simulate:
             self.send_rc_control(0, 0, 0, 0)
+            #self.land() -> verificar
             self.send_command("land")
         print("Finalizei")
 

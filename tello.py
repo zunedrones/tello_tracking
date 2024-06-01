@@ -197,6 +197,17 @@ class Tello:
             pass
         return flight_time
 
+    def takeoff(self):
+        """
+        Initiates take-off.
+
+        Returns:
+            str: Response from Tello, 'OK' or 'FALSE'.
+
+        """
+
+        return self.send_command('takeoff')
+
     def land(self):
         """Initiates landing.
 
