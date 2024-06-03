@@ -2,7 +2,7 @@ from tello_zune import TelloZune
 import cv2
 import centralize1
 
-tello = TelloZune(simulate=True)
+tello = TelloZune(simulate=False)
 tello.start_tello()
 
 while True:
