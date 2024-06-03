@@ -132,7 +132,8 @@ class Tello:
         :param command: Command to send.
         :return (str): Response from Tello.
         """
-        print(">> send cmd: {}".format(command))
+        if command != 'battery?':
+            print(">> send cmd: {}".format(command))
         self.abort_flag = False
         timer = threading.Timer(self.command_timeout, self.set_abort_flag)
 
@@ -181,7 +182,7 @@ class Tello:
         try:
             battery = int(battery)
         except:
-            pass
+            battery = 80
         return battery
 
     def get_flight_time(self):

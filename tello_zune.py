@@ -13,8 +13,8 @@ HEIGHT = 306
 class BatteryError(Exception):
     pass
 
-def battery_error(tello_battery): # verificar
-    tello_battery = int(tello_battery)
+def battery_error(tello_battery: int): # verificar
+    #tello_battery = int(tello_battery)
     if tello_battery <= 20:
         raise BatteryError("Bateria menor que 20%, operação cancelada.")
 
