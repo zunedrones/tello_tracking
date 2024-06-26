@@ -1,18 +1,20 @@
 from tello_zune import TelloZune
 import cv2
-import detect_yolo as dy
-import tracking
+from tracking_base import tracking
 
 tello = TelloZune()
 tello.start_tello()
 
 while True:
-    tello.start_video()
-    dy.start_detection(tello.frame_detection)
-    tracking.start_tracking(tello, dy.values_detect)
+    frame = tello.get_frame()
 
+    tello.calc_fps(frame)
+    tracking(tello, frame)
+
+    cv2.imshow("Tello", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-tello.end_video()
+
 tello.end_tello()
+cv2.destroyAllWindows()
 
