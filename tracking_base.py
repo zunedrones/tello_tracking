@@ -1,5 +1,5 @@
 import numpy as np
-from base_detect_yolo import baseDetect
+from detect_yolo import baseDetect
 
 Width = 544
 Height = 306
