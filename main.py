@@ -8,7 +8,7 @@ tello.start_tello()
 while True:
     frame = tello.get_frame()
 
-    tello.calc_fps(frame)
+    tello.calc_fps()
     tracking(tello, frame)
 
     cv2.imshow("Tello", frame)

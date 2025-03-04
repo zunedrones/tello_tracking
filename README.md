@@ -1,6 +1,6 @@
 # tello_tracking
 
-Project using the Tello drone to track a predetermined object. The model was trained using YOLOv8s.
+Project using the Tello drone to track a predetermined object. The model was trained using YOLOv8m.
 
 ![image](https://github.com/user-attachments/assets/925e0983-29f8-493d-b752-966b26e1f6ff)
 
@@ -13,6 +13,12 @@ pip install ultralytics
 ```
 ```bash
 pip install opencv-python
+```
+```bash
+pip install tello-zune
+```
+```bash
+pip install "numpy<2"
 ```
 
 # Run the project

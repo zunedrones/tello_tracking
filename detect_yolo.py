@@ -6,18 +6,35 @@ FONTSCALE = 1
 COLOR = (255, 0, 0)
 THICKNESS = 2
 
+# Load model
 model = YOLO("tello_4.pt")
 classNames = ["movel", "takeoff"]
+
 count = 0
 x1, y1, x2, y2 = 0, 0, 0, 0
 cls = 0
 number_detect = 0
 
-def baseDetect(frame):
-    '''
-    Faz a deteccao da base e takeoff, utilzando modelo pre-treinado do yolov8n.
-    Recebe como argumento o frame atual do video.
-    '''
+def object_detect(frame):
+    """
+    Detects objects in the given frame using a YOLO model.
+
+    Parameters
+    ----------
+    frame : numpy.ndarray
+        The image frame in which objects will be detected.
+
+    Returns
+    -------
+    list
+        A list containing:
+        - x1 (int): Top-left x-coordinate of the bounding box.
+        - y1 (int): Top-left y-coordinate of the bounding box.
+        - x2 (int): Bottom-right x-coordinate of the bounding box.
+        - y2 (int): Bottom-right y-coordinate of the bounding box.
+        - number_detect (int): The number of detected objects.
+    """
+
     global count, x1, y1, x2, y2, cls, number_detect
     
     if count == 10:
@@ -42,7 +59,4 @@ def baseDetect(frame):
     cv2.circle(frame, ((x2 + x1) // 2, (y2 + y1) // 2), 5, (0, 255, 0), cv2.FILLED)
     count += 1
 
-    if number_detect >= 1:
-        return [frame, x1, y1, x2, y2, number_detect]
-    else:
-        return [frame, 0, 0, 0, 0, number_detect]
+    return [x1, y1, x2, y2, number_detect]
