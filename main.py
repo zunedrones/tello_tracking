@@ -1,20 +1,20 @@
-from tello_zune import TelloZune
+from djitellopy import Tello
 import cv2
-from tracking_base import tracking
+from detect_yolo import object_detect
 
-tello = TelloZune()
-tello.start_tello()
+tello = Tello()
+tello.connect()
+print(f"Battery: {tello.get_battery()}")
+tello.streamon()
 
 while True:
-    frame = tello.get_frame()
+    frame = tello.get_frame_read().frame
 
-    tello.calc_fps(frame)
-    tracking(tello, frame)
+    object_detect(frame)
 
     cv2.imshow("Tello", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-tello.end_tello()
 cv2.destroyAllWindows()
 
