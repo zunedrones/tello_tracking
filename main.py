@@ -1,6 +1,6 @@
 from tello_zune import TelloZune
 import cv2
-from tracking_base import tracking
+from tracking import tracking
 
 tello = TelloZune()
 tello.start_tello()
@@ -8,7 +8,7 @@ tello.start_tello()
 while True:
     frame = tello.get_frame()
 
-    tello.calc_fps()
+    tello.write_info(frame, fps=True, bat=True)
     tracking(tello, frame)
 
     cv2.imshow("Tello", frame)
